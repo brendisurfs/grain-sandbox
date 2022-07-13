@@ -28,19 +28,15 @@ let makeString =
     collection,
   ) => {
   let isUpper = Regex.isMatch(upperRe, strChar)
-  while (counter.count < Array.length(arr) && isUpper) {
-    let char = arr[counter.count]
-
-    print(strChar)
-    match (strChar != " ") {
+  while (counter.count < Array.length(arr)) {
+    match (isUpper) {
       true => {
-        addOne(counter)
+        let char = arr[counter.count]
         accumulator.value = String.concat(accumulator.value, char)
-      },
-      false => {
+        print(accumulator)
         addOne(counter)
-        Array.set(-1, accumulator.value, collection)
       },
+      false => addOne(counter),
     }
   }
 }
@@ -48,8 +44,29 @@ let makeString =
 // -------------------TEST SECTION ----------------------
 let mut collectedArr = Array.init(1, n => "")
 let testArr = String.split("", "this is a TEST OF words")
-let _ = Array.forEach(c => {
-  makeString(c, testArr, counter, acc, collectedArr)
+let stringRe = Result.unwrap(Regex.make("[a-z]+"))
+let spaceRegex = Result.unwrap(Regex.make("\\s"))
+let upperRe = Result.unwrap(Regex.make("[A-Z]+"))
+let _ = Array.map(c => {
+
+  let isSpace = Regex.isMatch(spaceRegex, c)
+  let isString = Regex.isMatch(stringRe, c)
+  let isUpper = Regex.isMatch(upperRe, c)
+
+  match (c) {
+    c when isString => {
+      print("char: " ++ c)
+      addOne(counter)
+    },
+    c when isSpace => {
+      print("space: " ++ c)
+      addOne(counter)
+    },
+    c when isUpper => {
+      print("upper: " ++ c)
+      addOne(counter)
+    },
+    _ => print("not sure: " ++ c),
+  }
   addOne(counter)
 }, testArr)
-print(collectedArr)
