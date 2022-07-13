@@ -19,25 +19,22 @@ let mut counter = { count: 0, }
 
 let upperRe = Result.unwrap(Regex.make("^[A-Z]*$"))
 
+/**
+ * makeString - makes a string of upper case letters from a loop.
+ */
 let makeString = (strChar, arr, counter: Counter, accumulator: Accum) => {
-  let isUpper = Regex.isMatch(upperRe, strChar)
   while (counter.count < Array.length(arr)) {
-    match (isUpper) {
-      true => {
-        let char = arr[counter.count]
-        accumulator.value = String.concat(accumulator.value, char)
-        print(accumulator)
-        addOne(counter)
-      },
-      false => addOne(counter),
-    }
+    let char = arr[counter.count]
+    accumulator.value = String.concat(accumulator.value, char)
+    print(accumulator)
+    addOne(counter)
   }
 }
 
 // -------------------TEST SECTION ----------------------
 let mut collectedArr = Array.init(1, n => "")
 let testArr = String.split("", "this is a TEST OF words")
-let stringRe = Result.unwrap(Regex.make("[a-z]+"))
+let lowerRe = Result.unwrap(Regex.make("[a-z]+"))
 let spaceRegex = Result.unwrap(Regex.make("\\s"))
 let upperRe = Result.unwrap(Regex.make("[A-Z]+"))
 
@@ -45,22 +42,21 @@ let accum = { value: "", }
 let _ = Array.map(c => {
 
   let isSpace = Regex.isMatch(spaceRegex, c)
-  let isString = Regex.isMatch(stringRe, c)
+  let isLower = Regex.isMatch(lowerRe, c)
   let isUpper = Regex.isMatch(upperRe, c)
 
   match (c) {
-    c when isString => {
+    c when isLower => {
       print("char: " ++ c)
       addOne(counter)
     },
     c when isSpace => {
       print("space: " ++ c)
-      addOne(counter)
     },
-    c when isUpper => {
-      makeString(c, testArr, counter, accum)
-      print("upper: " ++ c)
-      print(accum.value)
+    c when isUpper && !isSpace => {
+      print(counter.count)
+      accum.value = String.concat(accum.value, c)
+      print(accum)
       addOne(counter)
     },
     _ => print("not sure: " ++ c),
