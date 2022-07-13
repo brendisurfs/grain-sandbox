@@ -55,9 +55,12 @@ let _ = Array.map(c => {
     },
     c when isUpper && !isSpace => {
       print(counter.count)
+      addOne(counter)
       accum.value = String.concat(accum.value, c)
       print(accum)
-      addOne(counter)
+    },
+    c when isUpper && isSpace => {
+      print("CUT HERE")
     },
     _ => print("not sure: " ++ c),
   }
