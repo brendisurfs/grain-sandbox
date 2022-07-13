@@ -17,31 +17,39 @@ record Accum {
 let mut acc = { value: "", }
 let mut counter = { count: 0, }
 
-let mut collectedArr = Array.init(1, n => "")
 let upperRe = Result.unwrap(Regex.make("^[A-Z]*$"))
 
-let makeString = (strChar, arr, counter: Counter, accumulator: Accum) => {
+let makeString =
+  (
+    strChar,
+    arr,
+    counter: Counter,
+    accumulator: Accum,
+    collection,
+  ) => {
   let isUpper = Regex.isMatch(upperRe, strChar)
   while (counter.count < Array.length(arr) && isUpper) {
     let char = arr[counter.count]
 
     print(strChar)
     match (strChar != " ") {
-      true =>
-        accumulator.value = {
-          addOne(counter)
-          String.concat(accumulator.value, char)
-        },
-      false => Array.set(-1, acc.value, collectedArr),
+      true => {
+        addOne(counter)
+        accumulator.value = String.concat(accumulator.value, char)
+      },
+      false => {
+        addOne(counter)
+        Array.set(-1, accumulator.value, collection)
+      },
     }
   }
 }
 
 // -------------------TEST SECTION ----------------------
-
+let mut collectedArr = Array.init(1, n => "")
 let testArr = String.split("", "this is a TEST OF words")
 let _ = Array.forEach(c => {
-  makeString(c, testArr, counter, acc)
+  makeString(c, testArr, counter, acc, collectedArr)
   addOne(counter)
 }, testArr)
 print(collectedArr)
