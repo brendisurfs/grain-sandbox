@@ -19,14 +19,7 @@ let mut counter = { count: 0, }
 
 let upperRe = Result.unwrap(Regex.make("^[A-Z]*$"))
 
-let makeString =
-  (
-    strChar,
-    arr,
-    counter: Counter,
-    accumulator: Accum,
-    collection,
-  ) => {
+let makeString = (strChar, arr, counter: Counter, accumulator: Accum) => {
   let isUpper = Regex.isMatch(upperRe, strChar)
   while (counter.count < Array.length(arr)) {
     match (isUpper) {
@@ -47,6 +40,8 @@ let testArr = String.split("", "this is a TEST OF words")
 let stringRe = Result.unwrap(Regex.make("[a-z]+"))
 let spaceRegex = Result.unwrap(Regex.make("\\s"))
 let upperRe = Result.unwrap(Regex.make("[A-Z]+"))
+
+let accum = { value: "", }
 let _ = Array.map(c => {
 
   let isSpace = Regex.isMatch(spaceRegex, c)
@@ -63,7 +58,9 @@ let _ = Array.map(c => {
       addOne(counter)
     },
     c when isUpper => {
+      makeString(c, testArr, counter, accum)
       print("upper: " ++ c)
+      print(accum.value)
       addOne(counter)
     },
     _ => print("not sure: " ++ c),
