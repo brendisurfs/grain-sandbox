@@ -1,0 +1,47 @@
+import Array from "array"
+import String from "string"
+import Result from "result"
+import Regex from "regex"
+
+record Counter {
+  mut count: Number,
+}
+let addOne = c => {
+  c.count = incr(c.count)
+}
+
+record Accum {
+  mut value: String,
+}
+
+let mut acc = { value: "", }
+let mut counter = { count: 0, }
+
+let mut collectedArr = Array.init(1, n => "")
+let upperRe = Result.unwrap(Regex.make("^[A-Z]*$"))
+
+let makeString = (strChar, arr, counter: Counter, accumulator: Accum) => {
+  let isUpper = Regex.isMatch(upperRe, strChar)
+  while (counter.count < Array.length(arr) && isUpper) {
+    let char = arr[counter.count]
+
+    print(strChar)
+    match (strChar != " ") {
+      true =>
+        accumulator.value = {
+          addOne(counter)
+          String.concat(accumulator.value, char)
+        },
+      false => Array.set(-1, acc.value, collectedArr),
+    }
+  }
+}
+
+// -------------------TEST SECTION ----------------------
+
+let testArr = String.split("", "this is a TEST OF words")
+let _ = Array.forEach(c => {
+  makeString(c, testArr, counter, acc)
+  addOne(counter)
+}, testArr)
+print(collectedArr)
