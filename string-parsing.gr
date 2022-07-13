@@ -2,6 +2,7 @@ import Array from "array"
 import String from "string"
 import Result from "result"
 import Regex from "regex"
+import Option from "option"
 
 record Counter {
   mut count: Number,
@@ -37,30 +38,42 @@ let testArr = String.split("", "this is a TEST OF words")
 let lowerRe = Result.unwrap(Regex.make("[a-z]+"))
 let spaceRegex = Result.unwrap(Regex.make("\\s"))
 let upperRe = Result.unwrap(Regex.make("[A-Z]+"))
+let charRe = Result.unwrap(Regex.make("[a-zA-Z]+"))
 
 let accum = { value: "", }
-let _ = Array.map(c => {
+let mut collectedArr = Array.make(1, "")
+
+let _ = Array.mapi((c, idx) => {
 
   let isSpace = Regex.isMatch(spaceRegex, c)
+  let isChar = Regex.isMatch(charRe, c)
   let isLower = Regex.isMatch(lowerRe, c)
   let isUpper = Regex.isMatch(upperRe, c)
 
   match (c) {
     c when isLower => {
-      print("char: " ++ c)
       addOne(counter)
     },
     c when isSpace => {
-      print("space: " ++ c)
-    },
-    c when isUpper && !isSpace => {
-      print(counter.count)
       addOne(counter)
-      accum.value = String.concat(accum.value, c)
-      print(accum)
     },
-    c when isUpper && isSpace => {
-      print("CUT HERE")
+    c when isUpper => {
+      let nextChar = Some(testArr[idx + 1])
+      let canMatchChar = match (nextChar) {
+        Some(c) => Regex.isMatch(spaceRegex, c),
+        None => false,
+      }
+      let isNextCharSpace = match (canMatchChar) {
+        false => {
+          print(nextChar)
+          accum.value = String.concat(accum.value, Option.unwrap(nextChar))
+          print(accum)
+        },
+        true => {
+          print("space! next char: " ++ toString(nextChar))
+        },
+      }
+      addOne(counter)
     },
     _ => print("not sure: " ++ c),
   }
